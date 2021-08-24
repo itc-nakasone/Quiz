@@ -14,7 +14,14 @@ import jp.ac.it_college.nakasone.quiz.realm.model.Quiz
 import java.io.InputStreamReader
 
 private val quizFiles = listOf<String>(
-    "nakasone.csv"
+    "nakasone.csv",
+    "s20003.csv",
+    "s20007.csv",
+    "s20008.csv",
+    "s20010.csv",
+    "s20014.csv",
+    "s20020.csv",
+    "s20024.csv",
 )
 
 class QuizApplication : Application() {
@@ -67,6 +74,7 @@ class QuizApplication : Application() {
             .withType(QuizRecord::class.java)
             .withIgnoreLeadingWhiteSpace(true)
             .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+            .withSkipLines(1)
             .build()
             .parse()
     }

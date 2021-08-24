@@ -1,26 +1,26 @@
 package jp.ac.it_college.nakasone.quiz.csv
 
-import com.opencsv.bean.CsvBindByName
+import com.opencsv.bean.CsvBindByPosition
 
 data class QuizRecord(
-    @CsvBindByName(column = "問題文")
+    @CsvBindByPosition(position = 0)
     val question: String = "",
 
-    @CsvBindByName(column = "画像ファイル")
+    @CsvBindByPosition(position = 1)
     val imageFilename: String? = null,
 
-    @CsvBindByName(column = "画像の著作権表記")
+    @CsvBindByPosition(position = 6)
     val imageCopyright: String? = null,
 
-    @CsvBindByName(column = "選択肢1")
+    @CsvBindByPosition(position = 2)
     val choice1: String = "",
 
-    @CsvBindByName(column = "選択肢2")
+    @CsvBindByPosition(position = 3)
     val choice2: String = "",
 
-    @CsvBindByName(column = "選択肢3")
+    @CsvBindByPosition(position = 4)
     val choice3: String = "",
 
-    @CsvBindByName(column = "選択肢4")
+    @CsvBindByPosition(position = 5)
     val choice4: String = ""
 )
