@@ -3,6 +3,7 @@ package jp.ac.it_college.nakasone.quiz
 import android.app.Application
 import android.util.Log
 import com.opencsv.bean.CsvToBeanBuilder
+import com.opencsv.enums.CSVReaderNullFieldIndicator
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import io.realm.RealmList
@@ -29,14 +30,14 @@ class QuizApplication : Application() {
         val db = Realm.getDefaultInstance()
         val count = db.where<Quiz>().count()
         if (count != quizList.size.toLong()) {
-            Log.d("QuizApplication","registration quiz data")
+            Log.d("QuizApplication", "registration quiz data")
             db.executeTransaction { transaction ->
                 transaction.where<Quiz>().findAll().deleteAllFromRealm()
                 for (i in quizList.indices) {
                     val quiz = transaction.createObject<Quiz>(i + 1)
                     quiz.apply {
                         question = quizList[i].question
-                        imageFilename = quizList[i].imageFilename
+                        imageFilename = quizList[i].imageFilename?.substringBeforeLast(".")
                         imageCopyright = quizList[i].imageCopyright
                         choices = RealmList<String>(
                             quizList[i].choice1,
@@ -65,6 +66,7 @@ class QuizApplication : Application() {
         return CsvToBeanBuilder<QuizRecord>(reader)
             .withType(QuizRecord::class.java)
             .withIgnoreLeadingWhiteSpace(true)
+            .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
             .build()
             .parse()
     }

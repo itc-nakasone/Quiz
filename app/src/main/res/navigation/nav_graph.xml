@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/titleFragment">
+
+    <fragment
+        android:id="@+id/quizFragment"
+        android:name="jp.ac.it_college.nakasone.quiz.fragment.QuizFragment"
+        android:label="fragment_quiz"
+        tools:layout="@layout/fragment_quiz" >
+        <action
+            android:id="@+id/action_to_result"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/titleFragment"
+        android:name="jp.ac.it_college.nakasone.quiz.fragment.TitleFragment"
+        android:label="fragment_title"
+        tools:layout="@layout/fragment_title" >
+        <action
+            android:id="@+id/action_to_quiz"
+            app:destination="@id/quizFragment" />
+    </fragment>
+    <fragment android:id="@+id/resultFragment" >
+        <action
+            android:id="@+id/action_to_title"
+            app:destination="@id/titleFragment" />
+    </fragment>
+</navigation>

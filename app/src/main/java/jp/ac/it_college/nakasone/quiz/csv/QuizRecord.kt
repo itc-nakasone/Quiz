@@ -22,7 +22,5 @@ data class QuizRecord(
     val choice3: String = "",
 
     @CsvBindByName(column = "選択肢4")
-    val choice4: String = "",
-
-
-    )
+    val choice4: String = ""
+)

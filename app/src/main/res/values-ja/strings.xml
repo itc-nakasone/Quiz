@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">クイズ</string>
+    <string name="label_start">スタート</string>
+    <string name="quiz_image">クイズの画像</string>
 </resources>
