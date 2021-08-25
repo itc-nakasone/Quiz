@@ -2,4 +2,7 @@
     <string name="app_name">Quiz</string>
     <string name="label_start">Start</string>
     <string name="quiz_image">Quiz image</string>
+    <string name="bad">Bad</string>
+    <string name="good">Good</string>
+    <string name="timeup">Timeout</string>
 </resources>

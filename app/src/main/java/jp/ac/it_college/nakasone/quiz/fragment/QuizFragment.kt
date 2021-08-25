@@ -1,13 +1,12 @@
 package jp.ac.it_college.nakasone.quiz.fragment
 
-import android.os.Bundle
-import android.os.CountDownTimer
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import jp.ac.it_college.nakasone.quiz.databinding.FragmentQuizBinding
 import jp.ac.it_college.nakasone.quiz.realm.model.Quiz
 import jp.ac.it_college.nakasone.quiz.realm.model.randomChooseQuiz
@@ -17,20 +16,26 @@ const val MAX_COUNT = 10
 class QuizFragment : Fragment() {
     private var _binding: FragmentQuizBinding? = null
     private val binding get() = _binding!!
-    private var current: Int = -1
-    private var timer = TimeLeftCountdown()
+    private var current = -1
+    private var timeLeftCountdown = TimeLeftCountdown()
+    private var startTime = 0L
+    private var totalElapsedTime = 0L
+    private var correctCount = 0
+    private val currentElapsedTime: Long get() = SystemClock.elapsedRealtime() - startTime
 
     private lateinit var quizList: List<Quiz>
 
     private val onChoiceClick = View.OnClickListener { v ->
-        setBulkEnabled(false)
-        timer.cancel()
+        isBulkEnableButton(false)
+        timeLeftCountdown.cancel()
+        totalElapsedTime += currentElapsedTime
         if (v is Button && v.text == quizList[current].choices[0]) {
-            // 正解の表示
-            next()
+            binding.goodIcon.visibility = View.VISIBLE
+            correctCount++
+            delayNext(3000L)
         } else {
-            // 間違いの表示
-            next()
+            binding.badIcon.visibility = View.VISIBLE
+            delayNext(3000L)
         }
     }
 
@@ -40,10 +45,12 @@ class QuizFragment : Fragment() {
         }
 
         override fun onFinish() {
-            setBulkEnabled(false)
+            totalElapsedTime += currentElapsedTime
+            isBulkEnableButton(false)
             binding.timeLeftBar.progress = 0
+            binding.timeupIcon.visibility = View.VISIBLE
             // タイムアップの表示
-            next()
+            delayNext(2000L)
         }
 
     }
@@ -75,19 +82,31 @@ class QuizFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        timeLeftCountdown.cancel()
         _binding = null
     }
 
     private fun next() {
         if (++current < MAX_COUNT) {
-            timer.cancel()
+            timeLeftCountdown.cancel()
             setQuiz(current)
-            timer.start()
-            setBulkEnabled(true)
+            timeLeftCountdown.start()
+            isBulkEnableButton(true)
+            binding.badIcon.visibility = View.GONE
+            binding.goodIcon.visibility = View.GONE
+            binding.timeupIcon.visibility = View.GONE
+        }
+        startTime = SystemClock.elapsedRealtime()
+    }
+
+    private fun delayNext(delay: Long) {
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(delay) {
+            next()
         }
     }
 
-    private fun setBulkEnabled(flag: Boolean) {
+    private fun isBulkEnableButton(flag: Boolean) {
         binding.choiceA.isEnabled = flag
         binding.choiceB.isEnabled = flag
         binding.choiceC.isEnabled = flag
