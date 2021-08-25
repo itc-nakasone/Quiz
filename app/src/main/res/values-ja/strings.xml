@@ -6,4 +6,7 @@
     <string name="bad">不正解</string>
     <string name="good">正解</string>
     <string name="timeup">時間切れ</string>
+    <string name="point_text">得点</string>
+    <string name="time_text">タイム</string>
+    <string name="label_back">タイトルへ</string>
 </resources>

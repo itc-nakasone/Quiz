@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import jp.ac.it_college.nakasone.quiz.databinding.FragmentQuizBinding
 import jp.ac.it_college.nakasone.quiz.realm.model.Quiz
 import jp.ac.it_college.nakasone.quiz.realm.model.randomChooseQuiz
@@ -95,8 +96,10 @@ class QuizFragment : Fragment() {
             binding.badIcon.visibility = View.GONE
             binding.goodIcon.visibility = View.GONE
             binding.timeupIcon.visibility = View.GONE
+            startTime = SystemClock.elapsedRealtime()
+        } else {
+            toResult()
         }
-        startTime = SystemClock.elapsedRealtime()
     }
 
     private fun delayNext(delay: Long) {
@@ -134,6 +137,7 @@ class QuizFragment : Fragment() {
     }
 
     private fun toResult() {
-
+        val action = QuizFragmentDirections.actionToResult(correctCount, totalElapsedTime)
+        findNavController().navigate(action)
     }
 }
