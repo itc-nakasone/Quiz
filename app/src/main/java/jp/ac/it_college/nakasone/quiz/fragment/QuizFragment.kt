@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.addCallback
 import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -58,9 +59,10 @@ class QuizFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
         quizList = randomChooseQuiz(10)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+
+        }
     }
 
     override fun onCreateView(

@@ -1,7 +1,6 @@
 package jp.ac.it_college.nakasone.quiz
 
 import android.app.Application
-import android.util.Log
 import com.opencsv.bean.CsvToBeanBuilder
 import com.opencsv.enums.CSVReaderNullFieldIndicator
 import io.realm.Realm
@@ -37,7 +36,6 @@ class QuizApplication : Application() {
         val db = Realm.getDefaultInstance()
         val count = db.where<Quiz>().count()
         if (count != quizList.size.toLong()) {
-            Log.d("QuizApplication", "registration quiz data")
             db.executeTransaction { transaction ->
                 transaction.where<Quiz>().findAll().deleteAllFromRealm()
                 for (i in quizList.indices) {

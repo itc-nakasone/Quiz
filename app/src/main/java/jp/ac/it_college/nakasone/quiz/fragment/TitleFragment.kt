@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import jp.ac.it_college.nakasone.quiz.R
@@ -16,7 +17,8 @@ class TitleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().finish()
         }
     }
 
