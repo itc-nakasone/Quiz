@@ -55,6 +55,13 @@
                 android:contentDescription="@string/quiz_image"
                 android:scaleType="fitCenter"
                 tools:src="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/copyrightText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewEnd"
+                tools:text="copyright" />
         </LinearLayout>
     </ScrollView>
 

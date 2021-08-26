@@ -122,13 +122,20 @@ class QuizFragment : Fragment() {
         binding.quizText.text = quizList[position].question
         if (quizList[position].imageFilename.isNullOrBlank()) {
             binding.quizImage.visibility = View.GONE
+            binding.copyrightText.visibility = View.GONE
         } else {
             val resId = resources.getIdentifier(
                 quizList[position].imageFilename, "drawable",
                 context?.packageName
             )
-            binding.quizImage.setImageResource(resId)
-            binding.quizImage.visibility = View.VISIBLE
+            binding.quizImage.apply {
+                setImageResource(resId)
+                visibility = View.VISIBLE
+            }
+            binding.copyrightText.apply {
+                text = quizList[position].imageCopyright
+                visibility = View.VISIBLE
+            }
         }
 
         val randomChoice = quizList[position].choices.shuffled()
