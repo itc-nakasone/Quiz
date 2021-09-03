@@ -15,6 +15,10 @@ open class Quiz : RealmObject() {
     var choices: RealmList<String> = RealmList()
 }
 
+/**
+ * 全クイズデータを取得してシャッフルし
+ * 件数をチェックしつつ指定の件数以下でリストを返す
+ */
 fun randomChooseQuiz(count: Int): List<Quiz> {
     val list = Realm.getDefaultInstance().where<Quiz>().findAll().shuffled()
 

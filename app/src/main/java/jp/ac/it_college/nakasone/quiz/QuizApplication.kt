@@ -12,17 +12,27 @@ import jp.ac.it_college.nakasone.quiz.csv.QuizRecord
 import jp.ac.it_college.nakasone.quiz.realm.model.Quiz
 import java.io.InputStreamReader
 
-private val quizFiles = listOf<String>(
+/**
+ * 読み込む CSV ファイルのリスト
+ */
+private val quizFiles = listOf(
     "nakasone.csv",
     "s20003.csv",
     "s20007.csv",
     "s20008.csv",
     "s20010.csv",
+    "s20011.csv",
+    "s20012.csv",
     "s20014.csv",
+    "s20015.csv",
+    "s20016.csv",
+    "s20019.csv",
     "s20020.csv",
+    "s20022.csv",
     "s20024.csv",
 )
 
+@Suppress("unused")
 class QuizApplication : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -31,49 +41,63 @@ class QuizApplication : Application() {
             .allowWritesOnUiThread(true).build()
         Realm.setDefaultConfiguration(config)
 
+        // ちょっと効率よくないですが、毎回 csv ファイルを読み込んでデータ件数をチェックする。
         val quizList = loadData()
+        val csvQuizCount = quizList.size.toLong()
 
+        // Realm に登録されているクイズデータの件数を取得
         val db = Realm.getDefaultInstance()
         val count = db.where<Quiz>().count()
-        if (count != quizList.size.toLong()) {
-            db.executeTransaction { transaction ->
-                transaction.where<Quiz>().findAll().deleteAllFromRealm()
-                for (i in quizList.indices) {
-                    val quiz = transaction.createObject<Quiz>(i + 1)
-                    quiz.apply {
-                        question = quizList[i].question
-                        imageFilename = quizList[i].imageFilename?.substringBeforeLast(".")
-                        imageCopyright = quizList[i].imageCopyright
-                        choices = RealmList<String>(
-                            quizList[i].choice1,
-                            quizList[i].choice2,
-                            quizList[i].choice3,
-                            quizList[i].choice4,
-                        )
-                    }
-                }
-            }
+
+        // クイズデータの件数が一致しない場合は、一度削除して登録をやり直す(初回と更新時に発動するはず)
+        if (count != csvQuizCount) {
+            registerQuizData(db, quizList)
         }
     }
 
+    /**
+     * CSVファイルからクイズデータのリストを取得して返します
+     */
     private fun loadData(): List<QuizRecord> {
         val quizList = mutableListOf<QuizRecord>()
         for (file in quizFiles) {
-            val records = openAndLoadCsv(file)
+            val reader = resources.assets.open(file).reader()
+
+            // openCSV を利用してデータを取得
+            val records = CsvToBeanBuilder<QuizRecord>(reader)
+                .withType(QuizRecord::class.java)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+                .withSkipLines(1)
+                .build()
+                .parse()
             quizList.addAll(records)
         }
         return quizList
     }
 
-    private fun openAndLoadCsv(filename: String): List<QuizRecord> {
-        val reader = InputStreamReader(resources.assets.open(filename))
+    /**
+     * CSV のクイズデータを Realm に登録します
+     * 既存のデータは消去されます。
+     */
+    private fun registerQuizData(db: Realm, csvList: List<QuizRecord>) {
+        db.executeTransaction { transaction ->
+            transaction.where<Quiz>().findAll().deleteAllFromRealm()
 
-        return CsvToBeanBuilder<QuizRecord>(reader)
-            .withType(QuizRecord::class.java)
-            .withIgnoreLeadingWhiteSpace(true)
-            .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
-            .withSkipLines(1)
-            .build()
-            .parse()
+            for (i in csvList.indices) {
+                val quiz = transaction.createObject<Quiz>(i + 1)
+                quiz.apply {
+                    question = csvList[i].question
+                    imageFilename = csvList[i].imageFilename?.substringBeforeLast(".")
+                    imageCopyright = csvList[i].imageCopyright
+                    choices = RealmList<String>(
+                        csvList[i].choice1,
+                        csvList[i].choice2,
+                        csvList[i].choice3,
+                        csvList[i].choice4,
+                    )
+                }
+            }
+        }
     }
 }

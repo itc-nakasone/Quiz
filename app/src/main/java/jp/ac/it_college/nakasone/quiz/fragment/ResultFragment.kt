@@ -20,6 +20,9 @@ class ResultFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // NavController による想定外の移動をしないよう
+        // 明示的に TitleFragment へ移動
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_to_title)
         }

@@ -17,6 +17,9 @@ class TitleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // NavController により、想定外の移動をしないよう
+        // 明示的に Activity の終了を実行する。
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().finish()
         }
